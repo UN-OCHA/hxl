@@ -36,7 +36,8 @@ function _hxl_api_get_prefixes() {
 function _hxl_api_sparql_request($query) {
   $prefixes = _hxl_api_get_prefixes();
   $final_query = $prefixes.$query;
-  $endpoint = HXL_SPARQL_ENDPOINT;
+  $endpoint = new stdClass();
+  $endpoint->uri = HXL_SPARQL_ENDPOINT;
   return sparql_request($query, $endpoint);
 }
 
