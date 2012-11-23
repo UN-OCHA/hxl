@@ -28,7 +28,7 @@ function _hxl_api_get_prefixes() {
   
   $return = '';
   foreach ($prefixes as $prefix => $ns) {
-    $prefix .= "prefix ".$prefix.": <".$ns.">\n";
+    $return .= "prefix ".$prefix.": <".$ns.">\n";
   }
   return $return;
 }
@@ -38,6 +38,7 @@ function _hxl_api_sparql_request($query) {
   $final_query = $prefixes.$query;
   $endpoint = new stdClass();
   $endpoint->uri = HXL_SPARQL_ENDPOINT;
+  debug($final_query);
   return sparql_request($final_query, $endpoint);
 }
 
