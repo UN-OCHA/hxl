@@ -50,12 +50,12 @@ function hxl_api_get_locations_by_admin_level($pcode, $level) {
       ?a hxl:featureName ?name .
       ?a ogc:hasGeometry ?geom .
       ?geom ogc:hasSerialization ?wkt .
-      OPTIONAL { 
-        ?a hxl:atLocation ?father .
-        ?father hxl:pcode ?parent .
-      }
       FILTER regex(str(?lvl), '" . $level . "$') .
       FILTER regex(str(?pcode), '^" . $pcode ."') .
+    }
+    OPTIONAL { 
+      ?a hxl:atLocation ?father .
+      ?father hxl:pcode ?parent .
     }
   } GROUP BY ?a ?pcode ?name ?parent ?wkt ORDER BY ?parent";
   
