@@ -47,8 +47,8 @@ function hxl_api_get_locations_by_admin_level($pcode, $level) {
       ?a hxl:atLevel ?lvl .
       ?a hxl:pcode ?pcode .
       ?a hxl:featureName ?name .
-      FILTER regex(str(?lvl), '1$') .
-      FILTER regex(str(?pcode), '^MLI') .
+      FILTER regex(str(?lvl), '" . $level . "$') .
+      FILTER regex(str(?pcode), '^" . $pcode ."') .
     }
     OPTIONAL { ?a hxl:atLocation ?parent . }
   } GROUP BY ?a ?pcode ?name ORDER BY ?parent";
