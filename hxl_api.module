@@ -38,17 +38,18 @@ function _hxl_api_sparql_request($query) {
   $final_query = $prefixes.$query;
   $endpoint = new stdClass();
   $endpoint->uri = HXL_SPARQL_ENDPOINT;
-  debug($final_query);
   return sparql_request($final_query, $endpoint);
 }
 
 function hxl_api_get_locations_by_admin_level($pcode, $level) {
-  $query = "SELECT (MAX(?date) AS ?mydate) ?pcode ?name WHERE {
+  $query = "SELECT (MAX(?date) AS ?latest) ?pcode ?name ?parent ?wkt WHERE {
     GRAPH ?g {
       ?g hxl:validOn ?date .
       ?a hxl:atLevel ?lvl .
       ?a hxl:pcode ?pcode .
       ?a hxl:featureName ?name .
+      ?a hxl:hasGeometry ?geom .
+      ?geom ogc:hasSerialization ?wkt
       FILTER regex(str(?lvl), '" . $level . "$') .
       FILTER regex(str(?pcode), '^" . $pcode ."') .
     }
@@ -56,7 +57,7 @@ function hxl_api_get_locations_by_admin_level($pcode, $level) {
   } GROUP BY ?a ?pcode ?name ORDER BY ?parent";
   
   $rows = _hxl_api_sparql_request($query);
-  foreach ($rows as $row) {
+  foreach ($rows['rows'] as $row) {
     debug($row);
   }
 }
