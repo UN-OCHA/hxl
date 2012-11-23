@@ -1,0 +1,6 @@
+name = HXL API
+description = Provides an API that can be used to make calls to the HXL triple store.
+core = 7.x
+package = "HXL"
+
+dependencies[] = "sparql"

@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * Provides an API to use the HXL triple store.
+ */
+
+/**
+ * SPARQL endpoint
+ */
+define('HXL_SPARQL_ENDPOINT', 'http://hxl.humanitarianresponse.info/sparql');
+
+/**
+ * HXL namespace
+ */
+define('HXL_NAMESPACE', 'http://hxl.humanitarianresponse.info/ns/#');
+
+/**
+ * OGC Namespace
+ */
+define('HXL_OGC_NAMESPACE', 'http://www.opengis.net/ont/geosparql#');
+
+function _hxl_api_get_prefixes() {
+  $prefixes = array(
+    'hxl' => HXL_NAMESPACE,
+    'ogc' => HXL_OGC_NAMESPACE,
+  );
+  
+  $return = '';
+  foreach ($prefixes as $prefix => $ns) {
+    $prefix .= "prefix ".$prefix.": <".$ns.">\n";
+  }
+  return $return;
+}
+
+function _hxl_api_sparql_request($query) {
+  $prefixes = _hxl_api_get_prefixes();
+  $final_query = $prefixes.$query;
+  $endpoint = HXL_SPARQL_ENDPOINT;
+  return sparql_request($query, $endpoint);
+}
+
+function hxl_api_get_locations_by_admin_level($pcode, $level) {
+  $query = "SELECT (MAX(?date) AS ?mydate) ?pcode ?name WHERE {
+    GRAPH ?g {
+      ?g hxl:validOn ?date .
+      ?a hxl:atLevel ?lvl .
+      ?a hxl:pcode ?pcode .
+      ?a hxl:featureName ?name .
+      FILTER regex(str(?lvl), '1$') .
+      FILTER regex(str(?pcode), '^MLI') .
+    }
+    OPTIONAL { ?a hxl:atLocation ?parent . }
+  } GROUP BY ?a ?pcode ?name ORDER BY ?parent";
+  
+  $rows = _hxl_api_sparql_request($query);
+  foreach ($rows as $row) {
+    debug($row);
+  }
+}
