@@ -49,12 +49,12 @@ function hxl_api_get_locations_by_admin_level($pcode, $level) {
       ?a hxl:pcode ?pcode .
       ?a hxl:featureName ?name .
       ?a hxl:hasGeometry ?geom .
-      ?geom ogc:hasSerialization ?wkt
+      ?geom ogc:hasSerialization ?wkt .
+      OPTIONAL { ?a hxl:atLocation ?parent . }
       FILTER regex(str(?lvl), '" . $level . "$') .
       FILTER regex(str(?pcode), '^" . $pcode ."') .
     }
-    OPTIONAL { ?a hxl:atLocation ?parent . }
-  } GROUP BY ?a ?pcode ?name ORDER BY ?parent";
+  } GROUP BY ?a ?pcode ?name ?parent ?wkt ORDER BY ?parent";
   
   $rows = _hxl_api_sparql_request($query);
   foreach ($rows['rows'] as $row) {
