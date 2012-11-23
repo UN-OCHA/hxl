@@ -38,7 +38,7 @@ function _hxl_api_sparql_request($query) {
   $final_query = $prefixes.$query;
   $endpoint = new stdClass();
   $endpoint->uri = HXL_SPARQL_ENDPOINT;
-  return sparql_request($query, $endpoint);
+  return sparql_request($final_query, $endpoint);
 }
 
 function hxl_api_get_locations_by_admin_level($pcode, $level) {
